@@ -15,6 +15,13 @@ import java.util.Map;
 import java.util.Properties;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.infinispan.Cache;
+import org.infinispan.configuration.cache.CacheMode;
+import org.infinispan.configuration.cache.Configuration;
+import org.infinispan.configuration.cache.ConfigurationBuilder;
+import org.infinispan.configuration.global.GlobalConfigurationBuilder;
+import org.infinispan.manager.DefaultCacheManager;
+import org.infinispan.manager.EmbeddedCacheManager;
 
 /**
  *
@@ -28,6 +35,8 @@ public class AppConst {
     public static final HashMap<String, Object> PROPERTIES = new HashMap<>();
     public static final List<String> APP_PROPERTY_LIST = new LinkedList(Arrays.asList("sso", "app"));
     public static final String LOG_HEADER_FORMAT_STR = "----------- %-20s -----------";
+    private static Cache<String, Object> cache;
+    private static final Object CACHE_LOCK = new Object();
 
     /**
      * Возвращает название мнтода откуда она вызвана
@@ -46,7 +55,8 @@ public class AppConst {
      * @return
      */
     public static boolean getPropertiesFromFile(String filename) {
-        LOG.info(String.format("******************* %s **************** \n\tfilename = %s", "getPropertiesFromFile", filename));
+        String methodName = getCurrentMethodName();
+        LOG.info(String.format(LOG_HEADER_FORMAT_STR, methodName));
         boolean res = false;
         try (InputStream input = new FileInputStream(filename)) {
             Properties property = new Properties();
@@ -92,5 +102,32 @@ public class AppConst {
             LOG.log(Level.ERROR, ex2);
         }
         return res;
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    public static Cache<String, Object> getCache() {
+        String methodName = getCurrentMethodName();
+        LOG.info(String.format(LOG_HEADER_FORMAT_STR, methodName));
+        synchronized (CACHE_LOCK) {
+            if (cache == null) {
+                // Инициализируем Cache
+                GlobalConfigurationBuilder global = GlobalConfigurationBuilder.defaultClusteredBuilder();
+                global.transport().clusterName("cluster");
+                DefaultCacheManager cacheManager = new DefaultCacheManager(global.build());
+                Configuration config = cacheManager
+                        .defineConfiguration("weather",
+                                new ConfigurationBuilder()
+                                        .clustering()
+                                        .cacheMode(CacheMode.DIST_SYNC)
+                                        .build()
+                        );
+                cache = cacheManager.getCache("test");
+
+            }
+        }
+        return cache;
     }
 }

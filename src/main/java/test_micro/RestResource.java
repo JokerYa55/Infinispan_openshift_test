@@ -6,6 +6,7 @@
 package test_micro;
 
 import static app.AppConst.LOG_HEADER_FORMAT_STR;
+import static app.AppConst.getCache;
 import static app.AppConst.getCurrentMethodName;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -77,15 +78,8 @@ public class RestResource {
     public Response test() throws ParseException {
         String methodName = getCurrentMethodName();
         LOG.info(String.format(LOG_HEADER_FORMAT_STR, methodName));
-        long b_time = new Date().getTime();
-        long res = 0;
-        for (int i = 0; i < 10; i++) {
-            res++;
-        }
-        long e_time = new Date().getTime();
-        String res_text = String.format("res = %s time = %s", res, ((e_time - b_time)));
-        //log.info(res_text);
-        return Response.status(Status.OK).entity(res_text).build();
+        
+        return Response.status(Status.OK).entity(getCache()).build();
     }
 
     @Path("/async")

@@ -132,6 +132,12 @@
             <artifactId>weld-se-shaded</artifactId>
             <version>3.0.0.Final</version>
         </dependency>
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-core</artifactId>
+            <version>9.4.0.Final</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     <build>
         <finalName>${module.appname}</finalName>
