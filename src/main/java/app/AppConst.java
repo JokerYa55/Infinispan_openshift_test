@@ -27,6 +27,17 @@ public class AppConst {
     public static final String APP_PATH = System.getProperty("user.dir");
     public static final HashMap<String, Object> PROPERTIES = new HashMap<>();
     public static final List<String> APP_PROPERTY_LIST = new LinkedList(Arrays.asList("sso", "app"));
+    public static final String LOG_HEADER_FORMAT_STR = "----------- %-20s -----------";
+
+    /**
+     * Возвращает название мнтода откуда она вызвана
+     *
+     * @return
+     */
+    public static String getCurrentMethodName() {
+        //return Thread.currentThread().getStackTrace()[2].getClassName() + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
+        return Thread.currentThread().getStackTrace()[2].getMethodName();
+    }
 
     /**
      * Загрузка параметров из файла настроек

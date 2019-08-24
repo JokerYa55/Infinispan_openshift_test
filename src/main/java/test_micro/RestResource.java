@@ -5,6 +5,8 @@
  */
 package test_micro;
 
+import static app.AppConst.LOG_HEADER_FORMAT_STR;
+import static app.AppConst.getCurrentMethodName;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
@@ -35,21 +37,11 @@ import java.util.logging.Level;
 @Api(value = "/rest_test", description = "REST TEST")
 public class RestResource {
 
-    private static final Logger log = Logger.getLogger("rest");
-    private final String REGEXP_ATTR_PATTERN = "^id_app_[a-zA-Z0-9_]{1,}$";
+    private static final Logger LOG = Logger.getLogger(RestResource.class);
     private final String HEADER_CACHE_CONTROL_NAME = "Cache-Control";
     private final String HEADER_CACHE_CONTROL_VAL = "no-store";
     private final String HEADER_PRAGMA_NAME = "Pragma";
     private final String HEADER_PRAGMA_VAL = "no-cache";
-    private final String PERSISTENCE_NAME = "admin_rest_b2c_JPA";
-    private final String ERROR_PROPERTY_NOT_FOUND = "property not found";
-    private final String ERROR_DATA_NOT_FOUND = "data not found";
-    private final String ERROR_INSUFFICIENTLY_PRIVILEGED = "insufficiently privileged";
-    private final String ERROR_INVALID_TOKEN = "Barer";
-    private final String ERROR_INTERNAL_SERVER_ERROR = "internal server error";
-    private final String ERROR_TOKEN_PARSE = "token parse error";
-    private static final String CLIENT_PATTERN = "^lk_(.){1,}$";
-    private static String adm_token_global = null;
 
     @Context
     private HttpHeaders requestHeaders;
@@ -65,7 +57,7 @@ public class RestResource {
      * Конструктор
      */
     public RestResource() {
-        //log.info("\n************* constructor ****************\n");
+
     }
 
     /**
@@ -83,12 +75,12 @@ public class RestResource {
         ,
         @ApiResponse(code = 500, message = "Something wrong in Server")})
     public Response test() throws ParseException {
-        //log.info(String.format("\n********************* %s  %s *********************", new Date(), "TEST"));
-        //log.info(String.format("user = %s", user_1));
+        String methodName = getCurrentMethodName();
+        LOG.info(String.format(LOG_HEADER_FORMAT_STR, methodName));
         long b_time = new Date().getTime();
         long res = 0;
         for (int i = 0; i < 10; i++) {
-            res ++;
+            res++;
         }
         long e_time = new Date().getTime();
         String res_text = String.format("res = %s time = %s", res, ((e_time - b_time)));
@@ -99,7 +91,7 @@ public class RestResource {
     @Path("/async")
     @GET
     public void asyncGet(@Suspended final AsyncResponse asyncResponse) {
-        log.info("ASYNC");
+        LOG.info("ASYNC");
         new Thread(new Runnable() {
             @Override
             public void run() {
