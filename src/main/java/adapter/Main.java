@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test_micro;
+package adapter;
 
 import static app.AppConst.APP_PATH;
 import static app.AppConst.APP_PROPERTY_LIST;

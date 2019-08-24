@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test_micro;
+package adapter;
 
+import app.AppConst;
 import static app.AppConst.LOG_HEADER_FORMAT_STR;
+import static app.AppConst.PROPERTIES;
 import static app.AppConst.getCache;
 import static app.AppConst.getCurrentMethodName;
 import com.wordnik.swagger.annotations.Api;
@@ -80,9 +82,9 @@ public class RestResource {
         String methodName = getCurrentMethodName();
         LOG.info(String.format(LOG_HEADER_FORMAT_STR, methodName));
         Cache<String, Object> cache = getCache();
-        cache.put("test", "1");
+        cache.put("app_base_url", PROPERTIES.get("app_base_url"));
         
-        return Response.status(Status.OK).entity("test").build();
+        return Response.status(Status.OK).entity(cache.get("app_base_url")).build();
     }
 
     @Path("/async")
