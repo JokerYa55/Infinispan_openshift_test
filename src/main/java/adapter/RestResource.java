@@ -15,6 +15,8 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -83,8 +85,11 @@ public class RestResource {
         LOG.info(String.format(LOG_HEADER_FORMAT_STR, methodName));
         Cache<String, Object> cache = getCache();
         cache.put("app_base_url_" + PROPERTIES.get("app_number"), PROPERTIES.get("app_base_url"));
-        
-        return Response.status(Status.OK).entity(cache.get("app_base_url")).build();
+        final Map<String, Object> resultMap = new HashMap<>();
+        cache.keySet().forEach((t) -> {
+            resultMap.put(t, cache.get(t));
+        });
+        return Response.status(Status.OK).entity(resultMap).build();
     }
 
     @Path("/async")
