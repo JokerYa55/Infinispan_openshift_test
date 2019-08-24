@@ -28,12 +28,13 @@ import org.apache.log4j.Logger;
 import org.json.simple.parser.ParseException;
 import javax.ws.rs.container.Suspended;
 import java.util.logging.Level;
+import org.infinispan.Cache;
 
 /**
  *
  * @author vasil
  */
-@Path("/rest_test")
+@Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 @Api(value = "/rest_test", description = "REST TEST")
 public class RestResource {
@@ -78,8 +79,10 @@ public class RestResource {
     public Response test() throws ParseException {
         String methodName = getCurrentMethodName();
         LOG.info(String.format(LOG_HEADER_FORMAT_STR, methodName));
+        Cache<String, Object> cache = getCache();
+        cache.put("test", "1");
         
-        return Response.status(Status.OK).entity(getCache()).build();
+        return Response.status(Status.OK).entity("test").build();
     }
 
     @Path("/async")

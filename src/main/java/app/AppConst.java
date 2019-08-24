@@ -124,7 +124,7 @@ public class AppConst {
                                         .cacheMode(CacheMode.DIST_SYNC)
                                         .build()
                         );
-                cache = cacheManager.getCache("test");
+                cache = cacheManager.getCache("weather");
 
             }
         }
