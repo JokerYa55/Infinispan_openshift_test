@@ -8,13 +8,14 @@ package test_micro;
 import static app.AppConst.APP_PATH;
 import static app.AppConst.APP_PROPERTY_LIST;
 import static app.AppConst.PROPERTIES;
+import static app.AppConst.getPropertiesFromFile;
 import com.wordnik.swagger.jaxrs.config.BeanConfig;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;import java.util.HashMap;
-;
+import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import javax.ws.rs.ext.ContextResolver;
@@ -34,10 +35,7 @@ import org.glassfish.jersey.server.ResourceConfig;
  */
 public class Main {
 
-    public static String base_url = "";
-    private static final Logger LOG = Logger.getLogger(Main.class);    
-    public static String username_pattern_exp = "^(?=.{1,50}$)[a-zA-Z0-9_.@-]+()$";       
-    
+    private static final Logger LOG = Logger.getLogger(Main.class);
 
     /**
      *
@@ -54,7 +52,7 @@ public class Main {
         beanConfig.setVersion("1.0");
         beanConfig.setScan(true);
         beanConfig.setResourcePackage(RestResource.class.getPackage().getName());
-        beanConfig.setBasePath(base_url);
+        beanConfig.setBasePath((String) PROPERTIES.get("app_base_url"));
         beanConfig.setDescription("Admin rest b2c");
         beanConfig.setTitle("admin b2c API");
         return GrizzlyHttpServerFactory.createHttpServer(URI.create((String) PROPERTIES.get("app_base_url")), createApp(), false);
@@ -115,58 +113,4 @@ public class Main {
         return moxyJsonConfig.resolver();
     }
 
-    /**
-     * Загрузка параметров из файла настроек
-     *
-     * @param filename
-     * @return
-     */
-    private static boolean getPropertiesFromFile(String filename) {
-        LOG.info(String.format("******************* %s **************** \n\tfilename = %s", "getPropertiesFromFile", filename));
-        boolean res = false;
-        try (InputStream input = new FileInputStream(filename)) {
-            Properties property = new Properties();
-            property.load(input);
-            try {
-                Object[] prop_keys = property.keySet().toArray();
-                for (Object key : prop_keys) {
-                    PROPERTIES.put((String) key, property.get(key));
-                }
-                if (Boolean.parseBoolean((String) PROPERTIES.get("app_using_env_var"))) {
-                    // Получаем настройки из переменных окружения
-                    Map<String, String> env = System.getenv();
-                    try {
-                        // Заменяем значение параметров если они переопределены через переменные окружения
-                        env.forEach((t, u) -> {
-                            APP_PROPERTY_LIST.forEach((t1) -> {
-                                if (t.toLowerCase().matches("^" + t1.toLowerCase() + "_[a-z0-9_]{1,}$")) {
-                                    PROPERTIES.put(t.toLowerCase(), u);
-                                }
-                            });
-                        });
-
-                    } catch (Exception e) {
-                        LOG.log(Level.ERROR, e);
-                    }
-                }
-
-                PROPERTIES.forEach((t, u) -> {
-                    if (((String) t).contains("password")) {
-                        LOG.info(String.format("%-25s = %s", t, "**************"));
-                    } else {
-                        LOG.info(String.format("%-25s = %s", t, (String) u));
-                    }
-                });
-                res = true;
-            } catch (Exception ex1) {
-                LOG.error("Error format file properties");
-                ex1.printStackTrace();
-                LOG.log(Level.ERROR, ex1);
-            }
-        } catch (Exception ex2) {
-            ex2.printStackTrace();
-            LOG.log(Level.ERROR, ex2);
-        }
-        return res;
-    }
 }
