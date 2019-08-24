@@ -160,8 +160,8 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>test_micro.Main</mainClass>
-                            <packageName>test_micro</packageName>
+                            <mainClass>adapter.Main</mainClass>
+                            <packageName>adapter</packageName>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                         </manifest>
@@ -198,7 +198,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>test_micro.Main</mainClass>
+                    <mainClass>adapter.Main</mainClass>
                 </configuration>
             </plugin>
             <plugin>

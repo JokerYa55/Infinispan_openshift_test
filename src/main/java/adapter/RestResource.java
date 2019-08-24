@@ -82,7 +82,7 @@ public class RestResource {
         String methodName = getCurrentMethodName();
         LOG.info(String.format(LOG_HEADER_FORMAT_STR, methodName));
         Cache<String, Object> cache = getCache();
-        cache.put("app_base_url", PROPERTIES.get("app_base_url"));
+        cache.put("app_base_url_" + PROPERTIES.get("app_number"), PROPERTIES.get("app_base_url"));
         
         return Response.status(Status.OK).entity(cache.get("app_base_url")).build();
     }
