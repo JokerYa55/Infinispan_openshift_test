@@ -7,7 +7,11 @@ package app;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +26,8 @@ import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.global.GlobalConfigurationBuilder;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -105,8 +111,8 @@ public class AppConst {
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public static Cache<String, Object> getCache() {
         String methodName = getCurrentMethodName();
@@ -129,5 +135,25 @@ public class AppConst {
             }
         }
         return cache;
+    }
+
+    /**
+     *
+     * @return @throws SocketException
+     */
+    public static String getIp() throws SocketException {
+        final JSONObject result = new JSONObject();
+        JSONArray array = new JSONArray();
+        Enumeration e = NetworkInterface.getNetworkInterfaces();
+        while (e.hasMoreElements()) {
+            NetworkInterface n = (NetworkInterface) e.nextElement();
+            Enumeration ee = n.getInetAddresses();
+            while (ee.hasMoreElements()) {
+                InetAddress i = (InetAddress) ee.nextElement();
+                array.add(i.getHostAddress().replaceAll("\"", ""));
+            }
+        }
+        result.put("ip", array);
+        return result.toJSONString();
     }
 }

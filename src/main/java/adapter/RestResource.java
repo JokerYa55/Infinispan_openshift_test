@@ -10,10 +10,14 @@ import static app.AppConst.LOG_HEADER_FORMAT_STR;
 import static app.AppConst.PROPERTIES;
 import static app.AppConst.getCache;
 import static app.AppConst.getCurrentMethodName;
+import static app.AppConst.getIp;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -80,11 +84,11 @@ public class RestResource {
         @ApiResponse(code = 200, message = "OK")
         ,
         @ApiResponse(code = 500, message = "Something wrong in Server")})
-    public Response test() throws ParseException {
+    public Response test() throws ParseException, UnknownHostException, SocketException {
         String methodName = getCurrentMethodName();
         LOG.info(String.format(LOG_HEADER_FORMAT_STR, methodName));
         Cache<String, Object> cache = getCache();
-        cache.put("app_base_url_" + PROPERTIES.get("app_number"), PROPERTIES.get("app_base_url"));
+        cache.put("app_base_url_" + PROPERTIES.get("app_number"), /*PROPERTIES.get("app_base_url") + " ip = " +*/ getIp());
         final Map<String, Object> resultMap = new HashMap<>();
         cache.keySet().forEach((t) -> {
             resultMap.put(t, cache.get(t));

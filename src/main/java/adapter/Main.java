@@ -6,20 +6,16 @@
 package adapter;
 
 import static app.AppConst.APP_PATH;
-import static app.AppConst.APP_PROPERTY_LIST;
 import static app.AppConst.PROPERTIES;
+import static app.AppConst.getCache;
 import static app.AppConst.getPropertiesFromFile;
 import com.wordnik.swagger.jaxrs.config.BeanConfig;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import javax.ws.rs.ext.ContextResolver;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.glassfish.grizzly.http.CompressionConfig;
 import org.glassfish.grizzly.http.server.ErrorPageGenerator;
@@ -113,4 +109,7 @@ public class Main {
         return moxyJsonConfig.resolver();
     }
 
+    static {
+        getCache();
+    }
 }
